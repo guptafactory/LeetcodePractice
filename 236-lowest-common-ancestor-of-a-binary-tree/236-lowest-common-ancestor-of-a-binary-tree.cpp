@@ -9,13 +9,13 @@
  */
 class Solution {
 public:
-    int pathArray(TreeNode* root, TreeNode* a, vector<TreeNode*>&arr) {
-        if(root == NULL) return 0;
+    bool pathArray(TreeNode* root, TreeNode* a, vector<TreeNode*>&arr) {
+        if(root == NULL) return false;
         arr.push_back(root);
-        if(root == a) return 1;
-        if((root->left && pathArray(root->left, a, arr)) || (root->right && pathArray(root->right, a, arr))) return 1;
+        if(root == a) return true;
+        if((root->left && pathArray(root->left, a, arr)) || (root->right && pathArray(root->right, a, arr))) return true;
         arr.pop_back();
-        return 0;
+        return false;
     }
     TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
         if(root == NULL) return NULL;
