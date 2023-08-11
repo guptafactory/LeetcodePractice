@@ -1,40 +1,64 @@
-class Solution {
+class DisjointSet {
+    vector<int> rank, parent, size;
 public:
-    void dfs(vector<int> adjList[], vector<int> &vis, int node)
-    {
-        vis[node] = 1;
-        for (auto it : adjList[node])
-        {
-            if (!vis[it])
-                dfs(adjList, vis, it);
+    DisjointSet(int n) {
+        rank.resize(n + 1, 0);
+        parent.resize(n + 1);
+        size.resize(n + 1);
+        for (int i = 0; i <= n; i++) {
+            parent[i] = i;
+            size[i] = 1;
         }
     }
-    void AdjList(int n, vector<vector<int>>& isConnected, vector<int> adjList[])
-    {
-        for (int i = 0; i < n; i++)
-        {
-            for (int j = 0; j < n; j++)
-            {
-                if(isConnected[i][j])
-                {
-                    adjList[i+1].push_back(j+1);
-                    adjList[j+1].push_back(i+1);
+    int findUPr(int node) {
+        if (node == parent[node])
+            return node;
+        else
+            return parent[node] = findUPr(parent[node]);
+    }
+    void unionByRank(int u, int v) {
+        int upar_u = findUPr(u);
+        int upar_v = findUPr(v);
+        if (upar_u == upar_v)
+            return;
+        if (rank[upar_u] < rank[upar_v])
+            parent[upar_u] = upar_v;
+        else if (rank[upar_u] > rank[upar_v])
+            parent[upar_v] = upar_u;
+        else {
+            parent[upar_v] = upar_u;
+            rank[upar_u]++;
+        }
+    }
+    void unionBySize(int u, int v) {
+        int upar_u = findUPr(u);
+        int upar_v = findUPr(v);
+        if (upar_u == upar_v)
+            return;
+        if (size[upar_u] < size[upar_v]) {
+            parent[upar_u] = upar_v;
+            size[upar_v] += size[upar_u];
+        }
+        else {
+            parent[upar_v] = upar_u;
+            size[upar_u] += size[upar_v];
+        }
+    }
+};
+class Solution {
+public:
+    int findCircleNum(vector<vector<int>>& isConnected) {
+        int V = isConnected.size(), province = 0;
+        DisjointSet ds(V);
+        for (int i = 0; i < V; i++) {
+            for (int j = 0; j < V; j++) {
+                if (isConnected[i][j] == 1) {
+                    ds.unionByRank(i, j);
                 }
             }
         }
-    }
-    int findCircleNum(vector<vector<int>>& isConnected) {
-        int n = isConnected.size(), province = 0;
-        vector<int> adjList[n + 1];
-        AdjList(n, isConnected, adjList);
-        vector <int> vis(n + 1, 0);
-        for (int i = 1; i <= n; i++)
-        {
-            if (!vis[i])
-            {
-                province++;
-                dfs(adjList, vis, i);
-            }
+        for (int i = 0; i < V; i++) {
+            if (ds.findUPr(i) == i) province++;
         }
         return province;
     }
