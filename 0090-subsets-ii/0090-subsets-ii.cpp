@@ -2,16 +2,13 @@ class Solution {
 private:
     vector<vector<int>> ans;
     void subset(int ind, vector<int> &arr, int &n, vector<int> &nums) {
-        if(ind == n) {
-            ans.push_back(arr);
-            return;
+        ans.push_back(arr);
+        for(int i = ind; i < n; i++) {
+            if(i != ind && nums[i] == nums[i-1]) continue;
+            arr.push_back(nums[i]);
+            subset(i + 1, arr, n, nums);
+            arr.pop_back();
         }
-        // not take
-        subset(ind + 1, arr, n, nums);
-        // take
-        arr.push_back(nums[ind]);
-        subset(ind + 1, arr, n, nums);
-        arr.pop_back();
     }
 public:
     vector<vector<int>> subsetsWithDup(vector<int>& nums) {
@@ -19,10 +16,6 @@ public:
         vector<int> arr;
         sort(nums.begin(), nums.end());
         subset(0, arr, n, nums);
-        set<vector<int>> st;
-        for(int i = 0; i < ans.size(); i++) st.insert(ans[i]);
-        ans.clear();
-        for(auto x: st) ans.push_back(x);
         return ans;
     }
 };
