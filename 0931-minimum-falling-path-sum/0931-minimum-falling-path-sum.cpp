@@ -28,9 +28,10 @@ private:
         for(int j = 0; j < n; j++) ans = min(ans, dp[n-1][j]);
         return ans;
     }
+    // optimisation
     int func3(vector<vector<int>>& matrix) {
         int n = matrix.size();
-        vector<int> prev(n, INT_MAX), present(n, INT_MAX);
+        vector<int> prev(n), present(n);
         for(int j = 0; j < n; j++) prev[j] = matrix[0][j]; // initialising 1st row
         for(int i = 1; i < n; i++) {
             for(int j = 0; j < n; j++) {
@@ -38,7 +39,7 @@ private:
                 int down_left = j != 0 ? matrix[i][j] + prev[j-1] : INT_MAX;
                 int down_right = j != n-1 ? matrix[i][j] + prev[j+1] : INT_MAX;
                 
-                present[j] = min(min(present[j], down), min(down_left, down_right));
+                present[j] = min(down, min(down_left, down_right));
             }
             prev = present;
         }
@@ -55,7 +56,7 @@ public:
             ans = min(ans, func1(i, j, n, matrix, dp));
         }
         // return ans;
-        return func2(matrix, dp);
-        // return func3(matrix);
+        // return func2(matrix, dp);
+        return func3(matrix);
     }
 };
