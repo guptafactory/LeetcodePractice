@@ -1,0 +1,20 @@
+class Solution {
+long long func(int target, int &n, vector<int>&nums, vector<int> &dp) {
+    if(target == 0) return 1;
+    if(target < 0) return 0;
+    
+    if(dp[target] != -1) return dp[target];
+    
+    long long cnt = 0; 
+    for(int i = 0; i < n; i++) {
+        cnt += func(target - nums[i], n, nums, dp);
+    }
+    return dp[target] = cnt;
+}
+public:
+    int combinationSum4(vector<int>& nums, int target) {
+        int n = nums.size();
+        vector<int> dp(target + 1, -1);
+        return func(target, n, nums, dp);
+    }
+};
