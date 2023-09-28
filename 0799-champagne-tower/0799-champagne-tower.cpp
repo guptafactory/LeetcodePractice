@@ -29,10 +29,11 @@ private:
     } 
     // space-optimisation
     double func3(int row, int col, int &poured) {
-        vector<double> prev(100, 0.0), curr(100, 0.0);
+        vector<double> prev(100, 0.0);
         prev[0] = poured;
         
         for(int i = 0; i < row; i++) {
+            vector<double> curr(100, 0.0);
             for(int j = 0; j <= i; j++) {
                 double val = max((prev[j] - 1.0)/2.0, 0.0);
                 curr[j] += val; // down
@@ -40,13 +41,13 @@ private:
             }
             prev = curr;
         }
-        return min(curr[col], 1.0);
+        return min(prev[col], 1.0);
     }
 public:
     double champagneTower(int poured, int query_row, int query_glass) {
         // vector<vector<double>> dp(100, vector<double>(100, -1.0));
         // return min(func(query_row, query_glass, poured, dp), 1.0);
-        return func2(query_row, query_glass, poured);
-        // return func3(query_row, query_glass, poured);
+        // return func2(query_row, query_glass, poured);
+        return func3(query_row, query_glass, poured);
     }
 };
