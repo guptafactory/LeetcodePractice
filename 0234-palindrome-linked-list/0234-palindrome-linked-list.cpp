@@ -45,6 +45,9 @@ public:
         ListNode* newHead = mid->next;
         mid->next = NULL;
         newHead = reverseList(newHead);
-        return check(head, newHead);
+        bool ans = check(head, newHead);
+        newHead = reverseList(newHead);
+        mid->next = newHead;
+        return ans;
     }
 };
