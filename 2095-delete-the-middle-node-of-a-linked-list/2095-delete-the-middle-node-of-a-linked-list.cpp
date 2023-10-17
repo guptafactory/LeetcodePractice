@@ -16,7 +16,6 @@ public:
         while(fast != NULL && fast->next != NULL) {
             prev = slow;
             slow = slow->next;
-            if(fast == NULL) break;
             fast = fast->next->next;
         }
         prev->next = prev->next->next;
