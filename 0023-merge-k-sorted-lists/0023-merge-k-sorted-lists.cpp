@@ -24,19 +24,42 @@ private:
         if(list2 != NULL) curr->next = list2;
         return newHead->next;
     }
-    ListNode* mergeKlist(vector<ListNode*>& lists, int start, int end) {
+    // Divide & conquer
+    ListNode* mergeKlist1(vector<ListNode*>& lists, int start, int end) {
         if(start > end) return NULL;
         if(start == end) return lists[start];
         int mid = start + (end - start)/2;
         
-        ListNode* l1 = mergeKlist(lists, start, mid);
-        ListNode* l2 = mergeKlist(lists, mid+1, end);
+        ListNode* l1 = mergeKlist1(lists, start, mid);
+        ListNode* l2 = mergeKlist1(lists, mid+1, end);
         
         return mergeTwoLists(l1, l2);
     }
+    // Priority Queue
+    
+    ListNode* mergeKlist2(vector<ListNode*> &lists) {
+        auto comp = [](ListNode* a, ListNode* b) { return (a->val) > (b->val); };
+        priority_queue<ListNode*, vector<ListNode*>, decltype(comp)> pq(comp);
+        ListNode* dummy = new ListNode(-1e5), *prev = dummy;
+        for(auto node: lists) {
+            if(node != NULL) pq.push(node);
+        }
+        while(!pq.empty()) {
+            ListNode* node = pq.top();
+            pq.pop();
+            
+            prev->next = node;
+            prev = prev->next;
+            node = node->next;
+            if(node != NULL) pq.push(node);
+        }
+        return dummy->next;
+    }
+    
 public:
     ListNode* mergeKLists(vector<ListNode*>& lists) {
         if(lists.size() == 0) return NULL;
-        return mergeKlist(lists, 0, lists.size() - 1);
+        // return mergeKlist1(lists, 0, lists.size() - 1);
+        return mergeKlist2(lists);
     }
 };
