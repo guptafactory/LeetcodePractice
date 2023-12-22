@@ -1,45 +1,37 @@
 class Solution {
+private:
+    int delRow[4] = { -1, 0, 1, 0};
+    int delCol[4] = {0, 1, 0, -1};
 public:
     int orangesRotting(vector<vector<int>>& grid) {
-        int n = grid.size(), m = grid[0].size(), t = 0;
-        vector<vector<int>> arr = grid;
-        // stores {{row, col}, time}
-        queue <pair<int, int>> que;
-        int delRow[] = {0, 0, -1, 1};
-        int delCol[] = {-1, 1, 0, 0};
-        for(int i = 0; i < n; i++)
-        {
-            for(int j = 0; j < m; j++)
-            {
-                if(arr[i][j] == 2) que.push({i, j}); // Rotten oranges stores at t = 0
+        int n = grid.size(), m = grid[0].size(), time = 0;
+        queue<pair<int, int>> que;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                if (grid[i][j] == 2) que.push({i, j});
             }
         }
-        while(!que.empty())
-        {
-            int cnt = que.size();
-            while(cnt--)
-            {
+        while (!que.empty()) {
+            int cnt = que.size(), more_oranges = 0;
+            // All fresh oranges directly connected are marked rotten & pushed to queue for next degree of iteration
+            while (cnt--) {
                 auto pr = que.front();
                 que.pop();
                 int row = pr.first, col = pr.second;
-                for(int k = 0; k <= 3; k++)
-                {
-                    int newRow = row + delRow[k], newCol = col + delCol[k];
-                    if(newRow >=  0 && newRow < n && newCol >=  0 && newCol < m && arr[newRow][newCol] == 1) {
-                        arr[newRow][newCol] = 2;
-                        que.push({newRow, newCol});
+                for (int k = 0; k < 4; k++) {
+                    int nrow = row + delRow[k], ncol = col + delCol[k];
+                    if (nrow >= 0 && nrow < n && ncol >= 0 & ncol < m && grid[nrow][ncol] == 1) {
+                        more_oranges = 1;
+                        grid[nrow][ncol] = 2;
+                        que.push({nrow, ncol});
                     }
                 }
             }
-            t++;
+            if (more_oranges) time++;
         }
-        for(int i = 0; i < n; i++)
-        {
-            for(int j = 0; j < m; j++)
-            {
-                if(arr[i][j] == 1) return -1;
-            }
+        for (auto arr : grid) {
+            for (auto x : arr) { if (x == 1) return -1; }
         }
-        return t-1 > 0 ? t-1 : 0;
+        return time;
     }
 };
